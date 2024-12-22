@@ -26,26 +26,30 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity 0.8.19;
 
+import {VRFConsumerBaseV2Plus} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/VRFConsumerBaseV2Plus.sol";
+import {VRFV2PlusClient} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/dev/libraries/VRFV2PlusClient.sol";
 /**
  * @author Dheeraj joshi
  * @title Lottery Ticket
  * @dev this contract creating the sample raffle
  */
 
-contract Raffle {
+contract Raffle is VRFConsumerBaseV2Plus {
     error Raffle__SendMoreEtherRaffle();
     uint256 private immutable i_entranceFee;
     // @dev the duration of the lottery in seconds
     uint256 private immutable i_internal;
-    uint256 payable[] private s_players;
+    address payable[] private s_players;
+    uint256 private s_lastTime;
 
     // Events
     event RaffleEntered(address indexed player);
 
 
-    constructor (uint256 entranceFee , uint256 internal) {
+    constructor (uint256 entranceFee , uint256 internally, address vrfCoordinator) VRFConsumerBaseV2Plus(vrfCoordinator ) {
         i_entranceFee = entranceFee;
-        i_internal  = internal;
+        i_internal  = internally;
+        s_lastTime = block.timestamp;
     }
     function enterRaffle() external payable {
 
@@ -55,11 +59,32 @@ contract Raffle {
         }
 
         s_players.push(payable(msg.sender));
-        emit enterRaffle(msg.sender);
+        emit RaffleEntered(msg.sender);
         
     }
 
-    function PickWinner () external {
+    function PickWinner() external {
+        if((block.timestamp - s_lastTime) < i_internal){
+            revert();
+        }
+
+                VRFV2PlusClient.RandomWordsRequest request =  VRFV2PlusClient.RandomWordsRequest({
+                keyHash: s_keyHash,
+                subId: s_subscriptionId,
+                requestConfirmations: requestConfirmations,
+                callbackGasLimit: callbackGasLimit,
+                numWords: numWords,
+                extraArgs: VRFV2PlusClient._argsToBytes(
+                    // Set nativePayment to true to pay for VRF requests with Sepolia ETH instead of LINK
+                    VRFV2PlusClient.ExtraArgsV1({nativePayment: false})
+                )
+            })
+            requestId = s_vrfCoordinator.requestRandomWords(
+
+        );
+    }
+
+    function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal override{
 
     }
 
