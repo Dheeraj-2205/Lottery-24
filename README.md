@@ -64,3 +64,12 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+
+### Test
+1. Write deploy scripts
+    1. Note, these will not work on zksync
+2. Write Test
+    1. Local chain
+    2. Forked testnet
+    3. Forked mainnet
