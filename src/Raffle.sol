@@ -110,7 +110,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
      * @return ignored
      */
 
-    function checkUpkeep(bytes memory /* memory */ )
+    function checkUpkeep(bytes memory )
         public
         view
         returns (bool upkeepNeeded, bytes memory /* performData */ )
@@ -164,7 +164,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     }
 
     //CEI : Checks, Effects, Interaction Pattern
-    function fulfillRandomWords(uint256 , /*requestId, */ uint256[] calldata randomWords) internal override {
+    function fulfillRandomWords(uint256, /*requestId, */ uint256[] calldata randomWords) internal override {
         //Checks
         // condition require this thing coming for the checks
 
@@ -185,5 +185,9 @@ contract Raffle is VRFConsumerBaseV2Plus {
 
     function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getRaffleState() external view returns (RaffleState) {
+        return s_raffleState;
     }
 }
