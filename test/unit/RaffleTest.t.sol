@@ -33,14 +33,14 @@ contract RaffleTest is Test {
         vrfCoordinator = config.vrfCoordinator;
         gasLane = config.gasLane;
         subScriptionId = config.subScriptionId;
-        vm.deal(PLAYER,STARTING_PLAYER_BALANCE);
+        vm.deal(PLAYER, STARTING_PLAYER_BALANCE);
     }
 
     function testRaffleInitiallizesInOpenState() public view {
         assert(raffle.getRaffleState() == Raffle.RaffleState.OPEN);
     }
 
-    function testRaffleRevertWhenYouDontPayEnough () public {
+    function testRaffleRevertWhenYouDontPayEnough() public {
         //Arrange
         vm.prank(PLAYER);
         //Act //Asset
@@ -48,31 +48,31 @@ contract RaffleTest is Test {
         raffle.enterRaffle();
     }
 
-    function testRaffleRecordsPlayersWhenTheyEnter() public{
+    function testRaffleRecordsPlayersWhenTheyEnter() public {
         //Arrange
         vm.prank(PLAYER);
         //Act
-        raffle.enterRaffle{value : entranceFee}();
+        raffle.enterRaffle{value: entranceFee}();
         //Asset
         address playerRecorded = raffle.getPlayer(0);
         assert(playerRecorded == PLAYER);
     }
 
-    function testEnteringRaffleEmitsEvent() public{
+    function testEnteringRaffleEmitsEvent() public {
         //Arrange
         vm.prank(PLAYER);
         //Act
-        vm.expectEmit(true, false, false, false , address(raffle));
+        vm.expectEmit(true, false, false, false, address(raffle));
         emit RaffleEntered(PLAYER);
         //assert
 
-        raffle.enterRaffle{value : entranceFee}();
+        raffle.enterRaffle{value: entranceFee}();
     }
 
-    function testDontAllowPlayersToEnterWhileRaffleIsCalculating () public {
+    function testDontAllowPlayersToEnterWhileRaffleIsCalculating() public {
         //Arrange
         vm.prank(PLAYER);
-        raffle.enterRaffle{value : entranceFee}();
+        raffle.enterRaffle{value: entranceFee}();
         vm.warp(block.timestamp + interval + 1);
         vm.roll(block.number + 1);
         raffle.performUpkeep("");
@@ -80,8 +80,6 @@ contract RaffleTest is Test {
         //Act
         vm.expectRevert(Raffle.Raffle_RaffleNotOpen.selector);
         vm.prank(PLAYER);
-        raffle.enterRaffle{value : entranceFee}();
+        raffle.enterRaffle{value: entranceFee}();
     }
-
-
 }
