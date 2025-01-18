@@ -6,7 +6,7 @@ import {VRFCoordinatorV2_5Mock} from
     "../lib/chainlink-brownie-contracts/contracts/src/v0.8/vrf/mocks/VRFCoordinatorV2_5Mock.sol";
 import {LinkToken} from "../test/mock/LinkToken.sol";
 
-abstract contract CodeConstant {
+abstract contract CodeConstants {
     uint96 public MOCK_BASE_FEE = 0.25 ether;
     uint96 public MOCK_GAS_PRICE_LINK = 1e9;
     //link /ETH price
@@ -16,7 +16,7 @@ abstract contract CodeConstant {
     uint256 public constant LOCAL_CHAIN_ID = 31337;
 }
 
-contract HelperConfig is CodeConstant, Script {
+contract HelperConfig is CodeConstants, Script {
     error HelperConfig__InvalidChainId();
 
     struct NetworkConfig {
@@ -57,10 +57,10 @@ contract HelperConfig is CodeConstant, Script {
             internally: 30,
             vrfCoordinator: 0x9DdfaCa8183c41ad55329BdeeD9F6A8d53168B1B,
             gasLane: 0x787d74caea10b2b357790d5b5247c2f63d1d91572a9846f780606e4d953677ae,
-            subScriptionId: 0,
+            subScriptionId: 8147037611932936202680956040372730515527274346517565496514900384703155237057,
             callbackGasLimit: 500000, //500,000
             interval: 30,
-            link : 0x514910771AF9Ca656af840dff83E8264EcF986CA
+            link: 0x514910771AF9Ca656af840dff83E8264EcF986CA
         });
     }
 
@@ -86,7 +86,7 @@ contract HelperConfig is CodeConstant, Script {
             subScriptionId: 0,
             callbackGasLimit: 500000, //500,000
             interval: 30,
-            link : address(LinkToken)
+            link: address(linkToken)
         });
 
         return localNetworkConfig;
